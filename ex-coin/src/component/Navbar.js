@@ -7,6 +7,7 @@ import {
   Modal,
   FloatingLabel,
   Col,
+  Spinner,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -93,47 +94,97 @@ export const NavigationBar = () => {
 
     navi("/");
   };
+  
+//   const handleSearch = (cryptoId) => {
+//     navi(`/currencies/${cryptoId}`);
+//     routeCoin.setSelectCoin("")
+//     handleClose(); // If you want to close the modal after clicking the search button
+//   };
 
   return (
     <>
-      {/* first nav bar */}
-      <Navbar bg="dark" data-bs-theme="dark" className="py-1">
-        <Container fluid>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto "></Nav>
-            {routeCoin.isLoggedin ? (
-              <div className="d-flex align-items-center text-white">
-              <Col className="fw-bold me-2">User:</Col>
-              <Col className="text-white">{routeCoin.user.username}</Col>
-              <Button
-                variant="primary"
-                size="sm"
-                className="ms-3"
-                onClick={handleLogout}
+      {routeCoin.global === undefined ? (
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <Navbar bg="dark" data-bs-theme="dark" className="py-1">
+          <Container fluid>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav
+                className="me-auto text-white fw-bold p-1 "
+                style={{ fontSize: 12 }}
               >
-                Log out
-              </Button>
-            </div>
-            ) : (
-              <div className="d-flex">
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  className="me-2"
-                  onClick={handleShowLogin}
-                >
-                  Log In
-                </Button>
-                <Button variant="primary" size="sm" onClick={handleShowSignUp}>
-                  Sign Up
-                </Button>
-              </div>
-            )}
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      {/* second nav bar */}
+                <Col>
+                  Cryptos :{" "}
+                  {routeCoin.global.total_cryptocurrencies.toLocaleString()}
+                </Col>
+                <Col>
+                  Exchanges :{" "}
+                  {routeCoin.global.active_exchanges.toLocaleString()}
+                </Col>
+                <Col>
+                  Market Cap : $
+                  {(
+                    routeCoin.global.quote.USD.total_market_cap / 1e12
+                  ).toLocaleString(undefined, {
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                  T
+                </Col>
+                <Col>
+                  24h Vol : $
+                  {(
+                    routeCoin.global.quote.USD.total_volume_24h / 1e9
+                  ).toLocaleString(undefined, {
+                    maximumFractionDigits: 1,
+                    minimumFractionDigits: 1,
+                  })}
+                  B
+                </Col>
+
+                <Col>Dominance :</Col>
+                  <Col>BTC: {routeCoin.global.btc_dominance.toFixed(2)}%</Col>
+                  <Col>ETH: {routeCoin.global.eth_dominance.toFixed(2)}%</Col>
+              </Nav>
+              {routeCoin.isLoggedin ? (
+                <div className="d-flex align-items-center text-white">
+                  <Col className="fw-bold me-2">User:</Col>
+                  <Col className="text-white">{routeCoin.user.username}</Col>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="ms-3"
+                    onClick={handleLogout}
+                  >
+                    Log out
+                  </Button>
+                </div>
+              ) : (
+                <div className="d-flex">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={handleShowLogin}
+                  >
+                    Log In
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleShowSignUp}
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              )}
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      )}
       <Navbar className="bg-body-tertiary">
         <Container fluid>
           <Navbar.Brand href="/">exCoin</Navbar.Brand>
@@ -151,17 +202,25 @@ export const NavigationBar = () => {
               </Nav.Link>
             </Nav>
             <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-              />
-              <Button variant="outline-success">Search</Button>
-            </Form>
+        <Form.Control
+          type="search"
+          placeholder="Search"
+          className="me-2"
+          aria-label="Search"
+        //   value={routeCoin.selectCoin}
+          onChange={(e) => routeCoin.setSelectCoin(e.target.value)}
+        />
+        <Button
+          variant="outline-success"
+        //   onClick={() => handleSearch(routeCoin.selectCoin)}
+        >
+          Search
+        </Button>
+      </Form>
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
       <>
         <Modal show={showLogin} onHide={handleClose}>
           <Modal.Header closeButton>

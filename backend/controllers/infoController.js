@@ -12,10 +12,16 @@ const fetchData = async (start, limit) => {
         "X-CMC_PRO_API_KEY": process.env.API_KEY,
       }
     });
+    const globalRes = await axios.get(`https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest`, {
+        headers: {
+          "X-CMC_PRO_API_KEY": process.env.API_KEY,
+        }
+      });
 
-    if (response.status === 200) {
+    if (response.status  === 200 && globalRes.status === 200) {
       const sendData = response.data.data;
-      console.log(response.data.data);
+      const sendGlobal = globalRes.data.data
+      console.log(globalRes.data.data);
 
       const logos = sendData.map((logo) => logo.id);
       const logosId = logos.join(',');
@@ -28,7 +34,7 @@ const fetchData = async (start, limit) => {
 
       if (secondRes.status === 200) {
         const logoData = secondRes.data;
-        return { logoData, sendData };
+        return { logoData, sendData, sendGlobal };
       }
     }
   } catch (e) {
@@ -41,8 +47,8 @@ router.get('/', async (req, res) => {
   try {
     let { start, limit } = req.query;
     if(start !== undefined && limit !== undefined){
-    const { logoData, sendData } = await fetchData(start, limit);
-    res.json({ logoData, sendData });
+    const { logoData, sendData, sendGlobal } = await fetchData(start, limit);
+    res.json({ logoData, sendData ,sendGlobal});
     console.log(start,limit);
     }
   } catch (error) {

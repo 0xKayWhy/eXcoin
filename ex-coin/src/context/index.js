@@ -19,6 +19,7 @@ export default function RouteProvider(props) {
   const [rowNum, setRowNum] = useState(1);
   const [ranking, setRanking] = useState(undefined);
   const [logo, setLogo] = useState(undefined);
+  const [global, setGlobal] = useState(undefined)
   const [display, setDisplay] = useState(undefined);
   const [user, setUser]=useState({})
   const [isLoggedin, setIsLoggedin] = useState(false)
@@ -45,6 +46,18 @@ export default function RouteProvider(props) {
 
   };
 
+  const getGlobal = async () => {
+    const res = await axiosConfig.get("",{
+        params : {start : rowNum, limit : rowFormat}
+    });
+    
+    if (res.status === 200) {
+      console.log("global",res.data.sendGlobal)
+      return res.data.sendGlobal;
+    }
+
+  };
+
   const mergeCoin = async () => {
     const logoArray = Object.entries(logo);
     const newRank = ranking.map((rank) => {
@@ -64,9 +77,13 @@ export default function RouteProvider(props) {
   const fetchData = async () => {
     const rankData = await getRank();
     const logoData = await getLogo();
+    const globalData = await getGlobal();
     setRanking(rankData);
     setLogo(logoData);
+    setGlobal(globalData)
   };
+
+  console.log("global",global )
 
   useEffect(() => {
     fetchData();
@@ -96,7 +113,9 @@ export default function RouteProvider(props) {
     user,
     setUser,
     isLoggedin,
-    setIsLoggedin
+    setIsLoggedin,
+    global
+   
 
     
   };
