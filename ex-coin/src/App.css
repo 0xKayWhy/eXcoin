@@ -1,0 +1,67 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: 330px;
+  height: 100vh;
+  overflow: auto;
+  position: sticky;
+  top: 0;
+}
+
+.stickLeft {
+  position: sticky;
+  left: 0; /* Don't forget this, required for the stickiness */
+}
+
+.stickTop {
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  z-index: 1;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+
+@media (max-width: 768px) {
+  /* Adjust the width of the column containing list.quote.USD.price at this breakpoint */
+  .table td.price-column {
+    min-width: 100px; /* Adjust this value based on your design */
+  }
+}
